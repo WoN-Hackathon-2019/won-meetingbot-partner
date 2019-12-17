@@ -14,6 +14,8 @@ import won.bot.framework.eventbot.event.impl.command.create.CreateAtomCommandSuc
 import won.bot.framework.eventbot.event.impl.wonmessage.ConnectFromOtherAtomEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherAtomEvent;
 import won.bot.framework.eventbot.listener.EventListener;
+import won.bot.meetingbotpartner.VenueRequest;
+import won.bot.meetingbotpartner.VenueResponse;
 import won.bot.meetingbotpartner.context.SkeletonBotContextWrapper;
 import won.protocol.message.WonMessage;
 import won.protocol.message.builder.WonMessageBuilder;
@@ -78,10 +80,18 @@ public class SkeletonBot extends EventBot {
                     return;
                 }
 
-                String request = "48.210159,16.355502;48.202251,16.361638/Metro Station"; // should result into
+                VenueRequest req = new VenueRequest();
+                req.setLocations(new double[][]{
+                        {48.210159, 16.355502},
+                        {48.202251, 16.361638}
+                });
+                req.setCategories(new String[]{"Metro Station"});
+
+                logger.info("Sending '{}'", req.stringify());
+
                 // Volkstheater
                 WonMessage wonMessage =
-                        WonMessageBuilder.connectionMessage().sockets().sender(e.getSocketURI()).recipient(e.getTargetSocketURI()).content().text(request).build();
+                        WonMessageBuilder.connectionMessage().sockets().sender(e.getSocketURI()).recipient(e.getTargetSocketURI()).content().text(req.stringify()).build();
                 getEventListenerContext().getWonMessageSender().prepareAndSendMessage(wonMessage);
 
             }
@@ -92,7 +102,9 @@ public class SkeletonBot extends EventBot {
             @Override
             protected void doRun(Event event, EventListener eventListener) throws Exception {
                 MessageFromOtherAtomEvent e = (MessageFromOtherAtomEvent) event;
-                logger.info("Got message: '{}'", extractTextMessageFromWonMessage(e.getWonMessage()));
+                String message = extractTextMessageFromWonMessage(e.getWonMessage());
+                logger.info("Got message: '{}'", message);
+                logger.info("Venue Address: {}", VenueResponse.parseJSON(message).getFormattedAddress());
             }
         });
 

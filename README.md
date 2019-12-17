@@ -1,49 +1,11 @@
-# Web of Needs Bot Skeleton
+# Meeting-Bot Partner
+This Bot demonstrates how to interact with the [Meeting-Bot](https://github.com/WoN-Hackathon-2019/won-meetingbot).
 
-This skeleton contains a bot that creates a Service Atom that one can connect to. 
-For each atom that has been created on the configured node(s), the bot sends a message with the atomUri of the created Atom to everyone that is connected to the Service Atom.
-
-The Bot Skeleton is a [Spring Boot Application](https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-running-your-application.html).
-
-## Running the bot
-
-### Prerequisites
-
-- [Openjdk 8](https://adoptopenjdk.net/index.html) - the method described here does **not work** with the Oracle 8 JDK!
-- Maven framework set up
-- Use this repository as a template (green button in github GUI), fork it, or clone it.
-
-### On the command line
-
-```
-cd bot-skeleton
-export WON_NODE_URI="https://hackathonnode.matchat.org/won"
-mvn clean package
-java -jar target/bot.jar
-```
-Now go to [What's new](https://hackathon.matchat.org/owner/#!/overview) to find your bot, connect and [create an atom](https://hackathon.matchat.org/owner/#!/create) to see the bot in action.
-
-### In Intellij Idea
-1. Create a run configuration for the class `won.bot.meetingbotpartner.SkeletonBotApp`
-2. Add the environment variables
-
-  * `WON_NODE_URI` pointing to your node uri (e.g. `https://hackathonnode.matchat.org/won` without quotes)
-  
-  to your run configuration.
-  
-3. Run your configuration
-
-If you get a message indicating your keysize is restricted on startup (`JCE unlimited strength encryption policy is not enabled, WoN applications will not work. Please consult the setup guide.`), refer to [Enabling Unlimited Strength Jurisdiction Policy](https://github.com/open-eid/cdoc4j/wiki/Enabling-Unlimited-Strength-Jurisdiction-Policy) to increase the allowed key size.
-
-##### Optional Parameters for both Run Configurations:
-- `WON_KEYSTORE_DIR` path to folder where `bot-keys.jks` and `owner-trusted-certs.jks` are stored (needs write access and folder must exist) 
-
-## Start coding
-
-Once the skeleton bot is running, you can use it as a base for implementing your own application. 
-- Add/edit config files in `src/main/resources`
-- Follow the [Mini HowTos](https://github.com/researchstudio-sat/webofneeds/tree/master/documentation/howto/README.md). 
-
-For an introduction to the Web of Needs Bot framework, have a look at the [Bot Readme](https://github.com/researchstudio-sat/webofneeds/blob/master/webofneeds/won-bot/README.md).
-
-
+## How-To-Use
+1. Create an atom with the tag `meetingapi`
+2. Wait for the [Meeting-Bot](https://github.com/WoN-Hackathon-2019/won-meetingbot) to match your atom. 
+3. Catch the `ConnectCommandEvent` and resend a `ConnectCommand` if the connection state is not `CONNECTED`
+4. Next time you catch a `ConnectCommandEvent` the connection will be established. 
+5. Send a `WonMessage` including a `VenueRequest`.
+6. Catch the `MessageFromOtherAtomEvent` and extract the message from the event. 
+7. Parse the message as a `VenueResponse`
